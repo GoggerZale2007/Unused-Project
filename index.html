@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Bluewire: Chat with Friends!</title> 
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="server-icon">B</div>
+            <nav class="channels">
+                <div class="channel-item active"># general</div>
+                <div class="channel-item"># rocketeers-lounge</div>
+            </nav>
+        </aside>
+
+        <main class="chat-window">
+            <header class="chat-header">
+                <span>#general</span>
+            </header>
+            
+            <div id="messages-container">
+                </div>
+
+            <form id="message-form">
+                <input type="text" id="message-input" placeholder="Message #general" autocomplete="off">
+            </form>
+        </main>
+    </div>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>general
