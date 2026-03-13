@@ -2,259 +2,225 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>&#8203;</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Inter:wght@400;700&display=swap');
+        :root { --cord-blue: #5865F2; --win-blue: #000082; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: white; overflow: hidden; margin: 0; touch-action: none; }
         
-        :root { --cord-blue: #5865F2; }
-        body { font-family: 'Inter', sans-serif; cursor: none; background: #000; color: white; overflow: hidden; }
-        
-        /* Bit-Style Loader */
-        .bit-spinner {
-            width: 40px; height: 40px;
-            border: 5px solid #1e1f22;
-            border-top: 5px solid var(--cord-blue);
-            animation: spin 0.8s steps(8) infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* UI Elements */
-        .cord-glass { background: rgba(10, 10, 12, 0.75); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); }
-        .bit-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: 24px; }
-        .bit-pixel { width: 6px; height: 6px; }
-        
-        #cursor {
-            position: fixed; width: 10px; height: 10px;
-            background: #fff; border: 1px solid #000;
-            pointer-events: none; z-index: 10000;
+        /* Landscape Force */
+        @media (orientation: portrait) {
+            #portrait-lock { display: flex !important; }
+            #os-container { display: none; }
         }
 
-        .bsod { background: #0046ab; font-family: 'Courier Prime', monospace; }
-        
-        /* Animations */
-        .fade-in { animation: fadeIn 0.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Micro-Bit Icon Generator */
+        .bit-icon { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; width: 32px; height: 32px; }
+        .bit-pixel { width: 7px; height: 7px; }
+
+        /* Classic Setup Aesthetic */
+        .win-setup { background: var(--win-blue); font-family: 'Courier Prime', monospace; }
+        .setup-shadow { box-shadow: 20px 20px 0px rgba(0,0,0,0.5); }
+
+        /* Window Animation */
+        .window-open { animation: ios-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes ios-pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Cursor */
+        #cursor { position: fixed; width: 20px; height: 20px; background: white; border: 2px solid black; pointer-events: none; z-index: 10000; display: none; }
+        @media (pointer: fine) { #cursor { display: block; } }
     </style>
 </head>
 <body>
 
     <div id="cursor"></div>
 
-    <div id="boot-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center">
-        <div class="mb-10 scale-150">
-            <div class="grid grid-cols-3 gap-1">
-                <div class="w-4 h-4 bg-[#5865F2]"></div><div class="w-4 h-4 bg-[#5865F2]"></div><div class="w-4 h-4 bg-white/20"></div>
-                <div class="w-4 h-4 bg-[#5865F2]"></div><div class="w-4 h-4 bg-white"></div><div class="w-4 h-4 bg-[#5865F2]"></div>
-                <div class="w-4 h-4 bg-white/20"></div><div class="w-4 h-4 bg-[#5865F2]"></div><div class="w-4 h-4 bg-[#5865F2]"></div>
-            </div>
-        </div>
-        <div class="bit-spinner"></div>
-        <p class="mt-8 text-[10px] tracking-[0.3em] text-gray-500 uppercase">System_Initialize_V1.026</p>
+    <div id="portrait-lock" class="fixed inset-0 z-[1000] bg-black hidden flex-col items-center justify-center text-center p-10">
+        <div class="w-12 h-20 border-4 border-[#5865F2] rounded animate-bounce mb-4"></div>
+        <h1 class="text-xl font-bold">ROTATE TO LANDSCAPE</h1>
+        <p class="text-xs text-gray-500 mt-2 uppercase">CordOS requires a wide-view workspace.</p>
     </div>
 
-    <div id="setup-screen" class="fixed inset-0 z-[90] bg-[#0b0c0e] hidden flex items-center justify-center p-10">
-        <div class="max-w-xl w-full">
-            <h1 class="text-4xl font-bold mb-2">Final Setup</h1>
-            <p class="text-gray-400 mb-10 text-sm">Welcome to CordOS. Let's configure your workstation.</p>
+    <div id="os-container">
+        <div id="boot-screen" class="fixed inset-0 z-[900] bg-black flex flex-col items-center justify-center">
+            <div class="grid grid-cols-2 gap-1 mb-8 scale-150">
+                <div class="w-6 h-6 bg-[#5865F2]"></div><div class="w-6 h-6 bg-[#5865F2]/20"></div>
+                <div class="w-6 h-6 bg-[#5865F2]/20"></div><div class="w-6 h-6 bg-white"></div>
+            </div>
+            <div class="w-10 h-10 border-4 border-t-[#5865F2] border-white/10 rounded-full animate-spin"></div>
+        </div>
+
+        <div id="classic-setup" class="fixed inset-0 z-[800] win-setup hidden flex items-center justify-center p-4">
+            <div class="w-full max-w-3xl bg-[#c0c0c0] p-1 text-black setup-shadow">
+                <div class="bg-[#000080] text-white px-2 py-1 flex justify-between items-center font-bold">
+                    <span>CordOS Setup</span>
+                    <span>X</span>
+                </div>
+                <div class="p-8 border-2 border-white">
+                    <h2 class="text-2xl mb-6 font-bold">Welcome to CordOS Installation</h2>
+                    <p class="mb-4">You are about to install CordOS on a virtual machine.</p>
+                    <div class="bg-white p-4 border-b-2 border-r-2 border-gray-800 mb-6">
+                        <p class="text-sm">Found: Unallocated Space (Local Disk C:)</p>
+                        <p class="text-sm font-bold">Total Size: 2,048,000 MB (2.0 TB)</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button onclick="startFinalSetup()" class="bg-[#c0c0c0] border-t-2 border-l-2 border-white border-r-2 border-b-2 border-gray-800 px-6 py-2 active:border-none">NEXT ></button>
+                        <button class="bg-[#c0c0c0] border-t-2 border-l-2 border-white border-r-2 border-b-2 border-gray-800 px-6 py-2 opacity-50">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="hello-screen" class="fixed inset-0 z-[700] bg-black hidden flex items-center justify-center">
+            <h1 class="text-6xl font-extralight tracking-tighter" id="hello-msg">Hello</h1>
+        </div>
+
+        <div id="desktop" class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070')] bg-cover hidden p-6">
             
-            <div class="space-y-4">
-                <div class="p-6 bg-[#18191c] rounded-lg border border-white/5 flex items-center justify-between">
-                    <span>Allocate System Disk (C:) <span class="text-gray-500 ml-2">2TB Available</span></span>
-                    <button onclick="runTask(1)" id="btn1" class="bg-[#5865F2] hover:bg-[#4752c4] px-4 py-2 text-xs font-bold rounded">INSTALL (27GB)</button>
+            <div class="flex flex-col gap-10">
+                <div ondblclick="openApp('explorer')" class="w-24 flex flex-col items-center group touch-none" id="icon-explorer">
+                    <div class="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center shadow-xl group-active:scale-95 transition-transform">
+                        <div class="bit-icon"><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white/20"></div><div class="bit-pixel bg-white/20"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div></div>
+                    </div>
+                    <span class="text-[10px] mt-2 font-bold uppercase tracking-widest text-white shadow-lg">Files</span>
                 </div>
-                <div class="p-6 bg-[#18191c] rounded-lg border border-white/5 flex items-center justify-between opacity-50" id="task2-row">
-                    <span>Discord Core Integration</span>
-                    <button onclick="runTask(2)" id="btn2" class="bg-white text-black px-4 py-2 text-xs font-bold rounded pointer-events-none">LINK CORE</button>
+
+                <div ondblclick="openApp('discord')" class="w-24 flex flex-col items-center group touch-none">
+                    <div class="w-16 h-16 bg-[#5865F2] rounded-xl flex items-center justify-center shadow-xl group-active:scale-95 transition-transform">
+                        <div class="bit-icon"><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div><div class="bit-pixel bg-white"></div></div>
+                    </div>
+                    <span class="text-[10px] mt-2 font-bold uppercase tracking-widest text-white shadow-lg">Discord</span>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div id="hello-screen" class="fixed inset-0 z-[85] bg-black hidden flex flex-col items-center justify-center">
-        <h1 id="hello-text" class="text-6xl font-extralight transition-all duration-1000">Hello</h1>
-    </div>
-
-    <div id="desktop" class="fixed inset-0 bg-[#1a1c1e] bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2524')] bg-cover hidden">
-        
-        <div class="p-6 flex flex-col gap-8 w-24 items-center">
-            <div onclick="openApp('discord')" class="flex flex-col items-center group cursor-pointer">
-                <div class="w-14 h-14 bg-[#5865F2] rounded-xl flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">
-                    <div class="grid grid-cols-2 gap-1"><div class="w-2 h-2 bg-white"></div><div class="w-2 h-2 bg-white"></div><div class="w-2 h-2 bg-white"></div><div class="w-2 h-2 bg-white/50"></div></div>
+            <div id="start-menu" class="hidden absolute bottom-16 left-4 w-72 bg-[#1e1f22]/95 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-2xl p-4 window-open">
+                <div class="flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl cursor-pointer">
+                    <div class="w-8 h-8 bg-[#5865F2] rounded-lg"></div>
+                    <span class="text-sm">Rocketeer User</span>
                 </div>
-                <span class="text-[10px] mt-2 font-bold shadow-sm">DISCORD</span>
-            </div>
-
-            <div onclick="openApp('explorer')" class="flex flex-col items-center group cursor-pointer">
-                <div class="w-14 h-14 bg-amber-500 rounded-xl flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">
-                    <div class="w-6 h-4 bg-white/30 rounded-sm"></div>
-                </div>
-                <span class="text-[10px] mt-2 font-bold shadow-sm">FILES</span>
-            </div>
-        </div>
-
-        <div id="app-discord" class="hidden absolute top-10 left-64 w-[1000px] h-[650px] cord-glass rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-ios-pop">
-            <div class="h-10 w-full cursor-move bg-white/5 flex items-center px-6">
-                <span class="text-[10px] font-bold tracking-widest opacity-50">CORDOS // DISCORD_WEB_CORE</span>
-                <div class="ml-auto flex gap-2">
-                    <button onclick="closeApp('discord')" class="w-3 h-3 bg-red-500 rounded-full"></button>
+                <hr class="my-4 border-white/10">
+                <div class="space-y-2 text-xs font-bold text-gray-400">
+                    <p class="p-2 hover:text-white cursor-pointer">CHROME BROWSER</p>
+                    <p class="p-2 hover:text-white cursor-pointer">CORDSER SEARCH</p>
+                    <p class="p-2 hover:text-white cursor-pointer text-red-400" onclick="triggerBSOD()">SYSTEM_SHUTDOWN</p>
                 </div>
             </div>
-            <iframe src="https://discord.com/widget?id=83224328&theme=dark" class="w-full h-full"></iframe>
-        </div>
 
-        <div id="app-explorer" class="hidden absolute top-20 left-40 w-[800px] h-[500px] cord-glass rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-            <div class="h-10 w-full cursor-move bg-white/5 flex items-center px-6">
-                <span class="text-[10px] font-bold tracking-widest opacity-50">C:\SYSTEM_ROOT</span>
-                <button onclick="closeApp('explorer')" class="ml-auto text-red-500 text-xs">CLOSE</button>
-            </div>
-            <div class="flex h-full">
-                <div class="w-48 border-r border-white/5 p-4 space-y-2 text-xs text-gray-400">
-                    <div class="hover:text-white cursor-pointer font-bold text-blue-400">Local Disk (C:)</div>
-                    <div class="pl-2">27GB / 2.0TB</div>
-                    <div class="mt-10 hover:text-white cursor-pointer">Secondary Disk (D:)</div>
-                    <div class="pl-2 text-[10px]">0B / 2.0TB</div>
+            <div id="app-explorer" class="hidden absolute inset-10 bg-[#0f0f11]/90 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden window-open">
+                <div class="h-14 bg-white/5 flex items-center px-8 border-b border-white/5">
+                    <span class="text-xs font-bold tracking-widest text-blue-400">LOCAL DISK (C:) - 2.0TB</span>
+                    <button onclick="closeApp('explorer')" class="ml-auto w-8 h-8 bg-red-500/20 text-red-500 rounded-full font-bold">X</button>
                 </div>
-                <div id="file-grid" class="flex-1 p-6 grid grid-cols-4 gap-4 overflow-y-auto pb-20 content-start">
+                <div class="p-10 grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-8 gap-8 overflow-y-auto h-full pb-32" id="file-grid">
                     </div>
             </div>
-        </div>
+            
+            <div id="app-discord" class="hidden absolute inset-6 bg-black rounded-[2rem] overflow-hidden shadow-2xl window-open border border-[#5865F2]/30">
+                <div class="h-10 bg-[#1e1f22] flex items-center px-6">
+                    <span class="text-[10px] font-bold">CORDOS x DISCORD CORE</span>
+                    <button onclick="closeApp('discord')" class="ml-auto text-red-500">CLOSE</button>
+                </div>
+                <iframe src="https://discord.com/widget?id=83224328&theme=dark" class="w-full h-full border-none"></iframe>
+            </div>
 
-        <div class="fixed bottom-0 w-full h-16 bg-black/40 backdrop-blur-2xl border-t border-white/10 flex items-center px-6">
-            <button onclick="showWarning('CordOS Start Menu is initializing updates.')" class="w-10 h-10 bg-[#5865F2] rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
-                <div class="w-4 h-4 bg-white"></div>
-            </button>
-            <div class="ml-auto flex items-center gap-6 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                <span>Disk C: 2.0TB</span>
-                <span id="clock">00:00:00</span>
+            <div class="fixed bottom-0 left-0 right-0 h-16 bg-black/40 backdrop-blur-2xl border-t border-white/5 flex items-center px-6 gap-6">
+                <button onclick="toggleStart()" class="w-12 h-12 bg-[#5865F2] rounded-xl flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+                    <div class="w-5 h-5 bg-white"></div>
+                </button>
+                <div class="flex gap-4" id="running-apps"></div>
+                <div class="ml-auto text-[10px] font-bold text-gray-500 tracking-widest flex items-center gap-4">
+                    <span>DISK: 27GB / 2.0TB</span>
+                    <span id="clock">00:00</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="popup" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="w-80 p-6 bg-[#1e1f22] border border-white/10 rounded-2xl shadow-2xl">
-            <h3 class="text-sm font-bold mb-2 text-amber-500">SYSTEM WARNING</h3>
-            <p id="popup-msg" class="text-xs text-gray-300 mb-6"></p>
-            <button onclick="closePopup()" class="w-full py-2 bg-white/10 hover:bg-white/20 rounded text-xs font-bold">ACKNOWLEDGE</button>
-        </div>
-    </div>
-
-    <div id="bsod" class="hidden fixed inset-0 z-[300] bsod p-20 flex flex-col justify-center">
-        <div class="text-9xl mb-10">:(</div>
-        <h1 class="text-3xl mb-10">Your PC ran into a problem and needs to restart.</h1>
-        <p class="text-xl mb-4">We're just collecting some error info, and then we'll restart for you.</p>
-        <p class="text-xl">0% complete</p>
-        <div class="mt-20 text-sm">
-            Stop Code: CRITICAL_PROCESS_DIED<br>
-            What failed: cordlauncher64.sys
+        <div id="bsod" class="hidden fixed inset-0 z-[1000] bg-[#0046ab] p-20 font-mono text-white">
+            <div class="text-9xl mb-10">:(</div>
+            <h1 class="text-4xl mb-10">Your PC ran into a problem and needs to restart.</h1>
+            <p>0% Complete</p>
+            <div class="mt-20 opacity-60">STOP CODE: CORDLAUNCHER64_FAIL</div>
         </div>
     </div>
 
     <script>
-        // 1. BOOT LOGIC
+        // BOOTING SEQUENCE
         setTimeout(() => {
-            document.getElementById('boot-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('boot-screen').classList.add('hidden');
-                document.getElementById('setup-screen').classList.remove('hidden');
-            }, 500);
-        }, 3500);
+            document.getElementById('boot-screen').classList.add('hidden');
+            document.getElementById('classic-setup').classList.remove('hidden');
+        }, 3000);
 
-        // 2. SETUP TASKS
-        let progress = 0;
-        function runTask(id) {
-            const btn = document.getElementById('btn' + id);
-            btn.innerText = "PROCESSING...";
-            btn.classList.add('animate-pulse');
-            
-            setTimeout(() => {
-                btn.innerText = "READY";
-                btn.style.background = "#22c55e";
-                progress++;
-                if(id === 1) {
-                    document.getElementById('task2-row').classList.remove('opacity-50');
-                    document.getElementById('btn2').classList.remove('pointer-events-none');
-                }
-                if(progress === 2) {
-                    document.getElementById('setup-screen').classList.add('hidden');
-                    document.getElementById('hello-screen').classList.remove('hidden');
-                    runHelloSequence();
-                }
-            }, 1500);
-        }
-
-        // 5. HELLO SEQUENCE
-        function runHelloSequence() {
-            const lines = ["Hello", "Everything is ready", "CordOS"];
+        function startFinalSetup() {
+            document.getElementById('classic-setup').classList.add('hidden');
+            document.getElementById('hello-screen').classList.remove('hidden');
+            const msgs = ["Hello", "Getting things ready", "CordOS"];
             let i = 0;
-            const el = document.getElementById('hello-text');
-            const interval = setInterval(() => {
+            const timer = setInterval(() => {
                 i++;
-                if(i < lines.length) {
-                    el.style.opacity = '0';
-                    setTimeout(() => {
-                        el.innerText = lines[i];
-                        el.style.opacity = '1';
-                    }, 500);
-                } else {
-                    clearInterval(interval);
+                if(i < msgs.length) document.getElementById('hello-msg').innerText = msgs[i];
+                else {
+                    clearInterval(timer);
                     document.getElementById('hello-screen').classList.add('hidden');
                     document.getElementById('desktop').classList.remove('hidden');
-                    generateFiles();
+                    initFiles();
                 }
             }, 2000);
         }
 
         // 12. GENERATE 800+ FILES
-        function generateFiles() {
+        function initFiles() {
             const grid = document.getElementById('file-grid');
-            // Add the "Trap" file
+            // The Trap File
             const trap = document.createElement('div');
-            trap.className = "flex flex-col items-center p-2 hover:bg-white/5 rounded cursor-pointer";
-            trap.onclick = () => triggerBSOD();
-            trap.innerHTML = `<div class="w-8 h-8 bg-red-500/20 border border-red-500 flex items-center justify-center text-[8px] font-bold mb-1">EXE</div><span class="text-[9px] text-center w-full truncate">cordlauncher64</span>`;
+            trap.className = "flex flex-col items-center group cursor-pointer touch-auto";
+            trap.ondblclick = () => triggerBSOD();
+            trap.innerHTML = `<div class="w-16 h-16 bg-red-500/10 border border-red-500/50 flex items-center justify-center rounded-xl mb-2"><div class="bit-icon"><div class="bit-pixel bg-red-500"></div></div></div><span class="text-[9px] font-bold text-red-500 uppercase">cordlauncher64</span>`;
             grid.appendChild(trap);
 
-            for(let i=1; i<802; i++) {
+            // 800+ system files
+            for(let i=1; i<820; i++) {
                 const div = document.createElement('div');
-                div.className = "flex flex-col items-center p-2 hover:bg-white/5 rounded cursor-pointer group";
+                div.className = "flex flex-col items-center group opacity-40 hover:opacity-100";
                 div.innerHTML = `
-                    <div class="w-8 h-8 bg-white/10 border border-white/20 flex items-center justify-center mb-1 group-hover:border-blue-500">
-                        <div class="w-2 h-2 bg-gray-500"></div>
+                    <div class="w-16 h-16 bg-white/5 border border-white/10 flex items-center justify-center rounded-xl mb-2">
+                        <div class="w-4 h-4 bg-gray-600"></div>
                     </div>
-                    <span class="text-[9px] text-gray-400 truncate w-full text-center">sys_frag_${i}.dat</span>
+                    <span class="text-[9px] text-gray-500 truncate w-full text-center">sys_data_${i}.bin</span>
                 `;
                 grid.appendChild(div);
             }
         }
 
-        // SYSTEM FUNCTIONS
-        function openApp(id) { document.getElementById('app-' + id).classList.remove('hidden'); }
+        // APP LOGIC
+        function openApp(id) { 
+            document.getElementById('app-' + id).classList.remove('hidden'); 
+            if(id === 'explorer') document.getElementById('start-menu').classList.add('hidden');
+        }
         function closeApp(id) { document.getElementById('app-' + id).classList.add('hidden'); }
-        
-        function showWarning(msg) {
-            document.getElementById('popup-msg').innerText = msg;
-            document.getElementById('popup').classList.remove('hidden');
-        }
-        function closePopup() { document.getElementById('popup').classList.add('hidden'); }
+        function toggleStart() { document.getElementById('start-menu').classList.toggle('hidden'); }
 
-        function triggerBSOD() {
-            document.getElementById('bsod').classList.remove('hidden');
-            document.title = "FATAL ERROR";
-        }
+        function triggerBSOD() { document.getElementById('bsod').classList.remove('hidden'); }
 
-        // CURSOR & CLOCK
+        // MOUSE & UTILS
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
+        // LONG PRESS FOR RIGHT CLICK
+        let pressTimer;
+        document.addEventListener('touchstart', (e) => {
+            pressTimer = window.setTimeout(() => { alert("Context Menu (Right Click) - Open / Delete / Properties"); }, 800);
+        });
+        document.addEventListener('touchend', () => clearTimeout(pressTimer));
+
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }, 1000);
     </script>
 </body>
-              </html>
-  
+                </html>
+                
