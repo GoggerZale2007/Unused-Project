@@ -5,40 +5,75 @@
     <title>Gnome Sort</title>
     <style>
         :root { 
-            --bg: #09090b; --bar: #27272a; --active: #ef4444; --success: #22c55e; --text: #fafafa;
+            --bg: #000000; 
+            --bar: #ffffff; 
+            --active: #ff0000; 
+            --success: #00ff00;
         }
         body { 
-            background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Courier New', monospace;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
         }
         #visualizer { 
-            display: flex; align-items: flex-end; height: 300px; width: 90vw; max-width: 600px;
-            gap: 4px; padding: 20px; background: #18181b; border-radius: 12px; border: 1px solid #3f3f46;
+            display: flex; 
+            align-items: flex-end; 
+            height: 250px; 
+            width: 400px;
+            gap: 8px; 
+            padding: 40px;
+            background: #000;
         }
-        .bar { flex: 1; background: var(--bar); border-radius: 2px; transition: height 0.05s; }
-        .active { background: var(--active); box-shadow: 0 0 15px var(--active); }
-        .success { background: var(--success); }
+        .bar { 
+            flex: 1; 
+            background: var(--bar); 
+            opacity: 0.8;
+            transition: height 0.08s ease-in-out; 
+        }
+        .active { 
+            background: var(--active) !important; 
+            opacity: 1;
+            box-shadow: 0 0 20px var(--active);
+        }
+        .success { 
+            background: var(--success) !important;
+            box-shadow: 0 0 10px var(--success);
+        }
+        .controls { margin-top: 50px; }
         button { 
-            margin-top: 40px; padding: 12px 28px; cursor: pointer; border: none; border-radius: 8px; 
-            font-weight: 600; background: var(--text); color: var(--bg); font-size: 1rem;
+            background: none; 
+            color: #555; 
+            border: 1px solid #333; 
+            padding: 10px 20px; 
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        button:disabled { opacity: 0.2; }
+        button:hover { color: #fff; border-color: #fff; }
     </style>
 </head>
 <body>
 
-    <h1 style="font-weight: 500; opacity: 0.9;">Gnome Sort</h1>
     <div id="visualizer"></div>
-    <button id="start" onclick="runSort()">Start Sorting</button>
+
+    <div class="controls">
+        <button id="start" onclick="runSort()">Execute Sort</button>
+    </div>
 
     <script>
         const container = document.getElementById('visualizer');
-        const startBtn = document.getElementById('start');
-        let audioCtx;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let arr = [];
-        const n_elements = 20; // Fewer elements makes the "music" clearer
+        const n_elements = 13; // Exactly 13 towers like the video
 
         function init() {
+            // Generate 13 random heights
             arr = Array.from({length: n_elements}, () => Math.floor(Math.random() * 80) + 15);
             render();
         }
@@ -47,78 +82,77 @@
             container.innerHTML = '';
             arr.forEach((val, i) => {
                 const bar = document.createElement('div');
-                bar.className = 'bar' + (i === activePos ? ' active' : '') + (isDone ? ' success' : '');
+                bar.className = 'bar';
+                if (i === activePos) bar.classList.add('active');
+                if (isDone) bar.classList.add('success');
                 bar.style.height = `${val}%`;
                 container.appendChild(bar);
             });
         }
 
-        function playTone(val, type = 'sine') {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(val, isSwap = false) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             
-            osc.type = type;
-            // Frequency logic: map height to a pleasant musical range
-            osc.frequency.setValueAtTime(220 + (val * 8), audioCtx.currentTime);
+            // Use 'square' or 'triangle' for that retro "blip" sound in the video
+            osc.type = isSwap ? 'triangle' : 'sine';
             
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            // Map height to a sharp musical frequency
+            const freq = 300 + (val * 12);
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
             
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            osc.stop(audioCtx.currentTime + 0.05);
         }
 
         async function playVictory() {
-            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; 
-            for (let freq of notes) {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            for (let f of notes) {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.frequency.value = freq;
+                osc.frequency.value = f;
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.8);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
                 await new Promise(r => setTimeout(r, 100));
             }
         }
 
+        // Exact logic from your provided image
         async function runSort() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            startBtn.disabled = true;
-
+            
             let pos = 0;
-            const n = arr.length;
+            const n = arr.length; //
 
-            while (pos < n) {
+            while (pos < n) { //
                 render(pos);
-                
-                // Play a standard tone for the "check"
-                playTone(arr[pos], 'sine');
-                await new Promise(r => setTimeout(r, 50));
+                playSound(arr[pos], false);
+                await new Promise(r => setTimeout(r, 80));
 
-                if (pos === 0 || arr[pos] >= arr[pos - 1]) {
-                    pos++;
+                if (pos === 0 || arr[pos] >= arr[pos - 1]) { //
+                    pos++; //
                 } else {
-                    // SWAP HAPPENING HERE
-                    // Play a sharper tone for the swap to match the video energy
-                    playTone(arr[pos], 'triangle'); 
+                    // Swap logic from image
+                    [arr[pos], arr[pos - 1]] = [arr[pos - 1], arr[pos]]; //
+                    pos--; //
                     
-                    [arr[pos], arr[pos - 1]] = [arr[pos - 1], arr[pos]];
-                    pos--;
-                    
-                    render(pos); // Show the swap immediately
-                    await new Promise(r => setTimeout(r, 50));
+                    playSound(arr[pos], true); // High pitch for the swap
+                    render(pos);
+                    await new Promise(r => setTimeout(r, 80));
                 }
             }
             
             render(-1, true);
             await playVictory();
-            
-            setTimeout(() => { init(); startBtn.disabled = false; }, 2000);
         }
 
         init();
