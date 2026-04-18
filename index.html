@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - MeRepeat Active</title>
+    <title></title>
     <style>
         :root {
             --android-blue: #1a73e8;
@@ -12,11 +12,10 @@
             --text-primary: #202124;
             --text-secondary: #5f6368;
             --divider: #e0e0e0;
-            --icon-color: #5f6368;
         }
 
         body {
-            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #121212;
             margin: 0;
             display: flex;
@@ -29,45 +28,45 @@
             max-width: 412px;
             height: 100vh;
             background: var(--surface);
-            overflow-y: auto;
             position: relative;
             box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            transition: transform 0.3s ease;
         }
+
+        /* Page System */
+        .page {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--surface);
+            display: none;
+            flex-direction: column;
+        }
+
+        .page.active { display: flex; }
 
         header {
-            position: sticky; top: 0;
-            background: var(--surface);
             padding: 56px 24px 16px;
-            display: flex; align-items: center;
+            display: flex;
+            align-items: center;
             border-bottom: 1px solid var(--divider);
-            z-index: 10;
         }
 
-        .back-arrow {
-            width: 12px; height: 12px;
-            border-left: 2px solid var(--text-primary);
-            border-bottom: 2px solid var(--text-primary);
-            transform: rotate(45deg);
-            margin-right: 32px;
-        }
-
-        .section-label {
-            padding: 24px 24px 8px;
-            font-size: 12px; font-weight: 700;
-            color: var(--android-blue);
-            text-transform: uppercase;
+        .back-btn {
+            width: 24px; height: 24px;
+            margin-right: 20px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .list-item {
-            padding: 18px 24px;
+            padding: 20px 24px;
             display: flex; align-items: center;
-            cursor: pointer; outline: none;
+            cursor: pointer;
             border-bottom: 1px solid #f8f8f8;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
-        /* The signature MeRepeat Blue Box */
         .active-focus {
             outline: 4px solid var(--android-blue) !important;
             outline-offset: -4px;
@@ -78,126 +77,178 @@
         .title { font-size: 16px; color: var(--text-primary); display: block; }
         .subtitle { font-size: 14px; color: var(--text-secondary); }
 
-        /* Material Switch */
-        .switch-container { width: 34px; height: 14px; background: #bdc1c6; border-radius: 14px; position: relative; }
-        .switch-handle {
-            width: 20px; height: 20px; background: #fafafa;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.4); border-radius: 50%;
-            position: absolute; top: -3px; left: -2px; transition: 0.2s;
+        /* Real Android Switch */
+        .switch-track {
+            width: 36px; height: 14px;
+            background: #bdc1c6;
+            border-radius: 14px;
+            position: relative;
         }
-        .active-switch .switch-container { background: #8ab4f8; }
-        .active-switch .switch-handle { background: var(--android-blue); left: 16px; }
+        .switch-thumb {
+            width: 20px; height: 20px;
+            background: #fafafa;
+            border-radius: 50%;
+            position: absolute;
+            top: -3px; left: -2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .on .switch-track { background: #8ab4f8; }
+        .on .switch-thumb { background: var(--android-blue); left: 18px; }
+
+        .desc-box {
+            padding: 24px;
+            background: var(--bg);
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
 
 <div class="phone-frame">
-    <header tabindex="0">
-        <div class="back-arrow"></div>
-        <h1>Settings</h1>
-    </header>
-
-    <div class="section-label">Wireless</div>
-    <div class="list-item" tabindex="0">
-        <div class="content"><span class="title">Wi-Fi</span><span class="subtitle">Home-Network</span></div>
-    </div>
-
-    <div class="section-label">Accessibility</div>
-    <div class="list-item" tabindex="0" id="mr-row">
-        <div class="content">
-            <span class="title">MeRepeat</span>
-            <span id="mr-status" class="subtitle">Off</span>
+    <div id="page-main" class="page active">
+        <header tabindex="0"><h1 style="margin:0; font-size:22px; font-weight:400;">Settings</h1></header>
+        <div class="list-item" tabindex="0">
+            <div class="content"><span class="title">Wi-Fi</span><span class="subtitle">Home_Network</span></div>
         </div>
-        <div id="switch-ui"><div class="switch-container"><div class="switch-handle"></div></div></div>
+        <div class="list-item" tabindex="0" onclick="navTo('page-acc')">
+            <div class="content"><span class="title">Accessibility</span><span class="subtitle">MeRepeat, Magnification</span></div>
+        </div>
+        <div class="list-item" tabindex="0">
+            <div class="content"><span class="title">About Phone</span><span class="subtitle">Pixel 8</span></div>
+        </div>
     </div>
 
-    <div class="list-item" tabindex="0">
-        <div class="content"><span class="title">Display size</span><span class="subtitle">Default</span></div>
+    <div id="page-acc" class="page">
+        <header tabindex="0">
+            <div class="back-btn" onclick="navTo('page-main')">←</div>
+            <h1 style="margin:0; font-size:22px; font-weight:400;">MeRepeat</h1>
+        </header>
+        <div class="list-item" tabindex="0" id="master-toggle-row">
+            <div class="content">
+                <span class="title">Use MeRepeat</span>
+                <span id="status-text" class="subtitle">Off</span>
+            </div>
+            <div id="switch-ui" class="switch-track"><div class="switch-thumb"></div></div>
+        </div>
+        <div class="desc-box" tabindex="0">
+            When MeRepeat is on, it provides spoken feedback so you can use your device without looking at the screen. 
+            <br><br>
+            <b>To Use:</b> Tap once to select, then double-tap to activate.
+        </div>
     </div>
 </div>
 
 <script>
     let audioCtx;
     let isEnabled = false;
-    let currentlySelected = null;
+    let selectedEl = null;
     const synth = window.speechSynthesis;
 
-    const Audio = {
+    const Sounds = {
         init: () => {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
         },
         play: (f, d, v=0.06) => {
-            Audio.init();
+            Sounds.init();
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
-            o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            o.frequency.value = f;
             g.gain.setValueAtTime(v, audioCtx.currentTime);
             g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
             o.connect(g); g.connect(audioCtx.destination);
             o.start(); o.stop(audioCtx.currentTime + d);
         },
-        tick: () => Audio.play(1100, 0.05), // Focus sound
-        tap: () => Audio.play(600, 0.1, 0.1), // Activation sound
-        chimeOn: () => { Audio.play(500, 0.1); setTimeout(()=>Audio.play(800, 0.1), 80); },
-        chimeOff: () => { Audio.play(800, 0.1); setTimeout(()=>Audio.play(500, 0.1), 80); }
+        tick: () => Sounds.play(1100, 0.05),
+        tap: () => Sounds.play(600, 0.1, 0.1),
+        on: () => { Sounds.play(500, 0.1); setTimeout(()=>Sounds.play(800, 0.1), 80); },
+        off: () => { Sounds.play(800, 0.1); setTimeout(()=>Sounds.play(500, 0.1), 80); }
     };
 
-    function speak(text) {
+    function speak(txt) {
         synth.cancel();
-        const u = new SpeechSynthesisUtterance(text);
+        const u = new SpeechSynthesisUtterance(txt);
         u.rate = 1.2;
         synth.speak(u);
     }
 
-    // This function handles the actual "action" of a button
-    function activateItem(item) {
-        Audio.tap();
-        if (item.id === 'mr-row') {
-            isEnabled = !isEnabled;
-            document.getElementById('mr-status').innerText = isEnabled ? "On" : "Off";
-            document.getElementById('switch-ui').classList.toggle('active-switch');
-            if (isEnabled) { Audio.chimeOn(); speak("MeRepeat on."); }
-            else { Audio.chimeOff(); speak("MeRepeat off."); clearFocus(); }
-        } else {
-            speak("Opening " + item.querySelector('.title').innerText);
-        }
+    function navTo(id) {
+        // Logic: if MeRepeat is on, nav requires double-tap. 
+        // For simplicity in this demo, nav functions are called via the interceptor.
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        clearFocus();
     }
 
     function clearFocus() {
         document.querySelectorAll('.active-focus').forEach(el => el.classList.remove('active-focus'));
-        currentlySelected = null;
+        selectedEl = null;
     }
 
-    // MAIN INTERACTION INTERCEPTOR
+    // Master Interceptor
     document.addEventListener('click', (e) => {
-        const target = e.target.closest('[tabindex="0"], .list-item');
+        const target = e.target.closest('[tabindex="0"], .list-item, .back-btn');
         if (!target) return;
 
-        // If MeRepeat is OFF, act like a normal website
-        if (!isEnabled && target.id !== 'mr-row') return;
-
-        // If MeRepeat is ON:
-        if (isEnabled || target.id === 'mr-row') {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (currentlySelected === target) {
-                // SECOND TAP: Activate
-                activateItem(target);
+        // --- SCENARIO A: MeRepeat is OFF ---
+        if (!isEnabled) {
+            // Only allow the master toggle to use "Double Tap" logic to turn it on
+            if (target.id === 'master-toggle-row') {
+                handleDoubleTap(target, () => {
+                    isEnabled = true;
+                    document.getElementById('switch-ui').parentElement.classList.add('on');
+                    document.getElementById('status-text').innerText = "On";
+                    Sounds.on();
+                    speak("MeRepeat turned on. Use MeRepeat.");
+                });
             } else {
-                // FIRST TAP: Select and Speak
-                clearFocus();
-                currentlySelected = target;
-                target.classList.add('active-focus');
-                Audio.tick();
-                
-                const title = target.querySelector('.title')?.innerText || target.innerText;
-                const sub = target.querySelector('.subtitle')?.innerText || "";
-                speak(`${title}. ${sub}. Double tap to activate.`);
+                // Normal clicking for everything else
+                if (target.getAttribute('onclick')) return; // let the inline onclick handle it
+                Sounds.tick();
             }
+            return;
         }
+
+        // --- SCENARIO B: MeRepeat is ON ---
+        e.preventDefault();
+        e.stopPropagation();
+
+        handleDoubleTap(target, () => {
+            if (target.id === 'master-toggle-row') {
+                isEnabled = false;
+                document.getElementById('switch-ui').parentElement.classList.remove('on');
+                document.getElementById('status-text').innerText = "Off";
+                Sounds.off();
+                speak("MeRepeat turned off.");
+                clearFocus();
+            } else if (target.getAttribute('onclick')) {
+                // Handle the back button and navigation
+                const cmd = target.getAttribute('onclick');
+                if (cmd.includes('page-acc')) navTo('page-acc');
+                if (cmd.includes('page-main')) navTo('page-main');
+            } else {
+                Sounds.tap();
+            }
+        });
     }, true);
+
+    function handleDoubleTap(target, actionCallback) {
+        if (selectedEl === target) {
+            actionCallback();
+        } else {
+            clearFocus();
+            selectedEl = target;
+            target.classList.add('active-focus');
+            Sounds.tick();
+            
+            const title = target.querySelector('.title')?.innerText || target.innerText || "Back";
+            const sub = target.querySelector('.subtitle')?.innerText || "";
+            speak(`${title}. ${sub}. Double tap to activate.`);
+        }
+    }
 </script>
 
 </body>
