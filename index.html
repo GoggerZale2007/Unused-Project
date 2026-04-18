@@ -3,240 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeRepeat - System Settings</title>
+    <title>Settings - MeRepeat Active</title>
     <style>
         :root {
             --android-blue: #1a73e8;
-            --bg-color: #ffffff;
-            --secondary-bg: #f1f3f4;
-            --text-main: #202124;
-            --text-sub: #5f6368;
+            --surface: #ffffff;
+            --bg: #f8f9fa;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --divider: #e0e0e0;
+            --icon-color: #5f6368;
         }
 
         body {
-            font-family: 'Roboto', sans-serif, Arial;
-            background-color: var(--secondary-bg);
-            color: var(--text-main);
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            background-color: #121212;
             margin: 0;
             display: flex;
             justify-content: center;
+            overflow: hidden;
         }
 
-        .phone-container {
+        .phone-frame {
             width: 100%;
-            max-width: 480px;
-            background: var(--bg-color);
-            min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 412px;
+            height: 100vh;
+            background: var(--surface);
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
         }
 
         header {
-            padding: 48px 24px 16px;
-            border-bottom: 1px solid #e0e0e0;
+            position: sticky; top: 0;
+            background: var(--surface);
+            padding: 56px 24px 16px;
+            display: flex; align-items: center;
+            border-bottom: 1px solid var(--divider);
+            z-index: 10;
         }
 
-        h1 {
-            font-size: 22px;
-            font-weight: 400;
-            margin: 0;
+        .back-arrow {
+            width: 12px; height: 12px;
+            border-left: 2px solid var(--text-primary);
+            border-bottom: 2px solid var(--text-primary);
+            transform: rotate(45deg);
+            margin-right: 32px;
         }
 
-        .setting-row {
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.1s;
-            border-bottom: 1px solid #f1f1f1;
-            outline: none;
+        .section-label {
+            padding: 24px 24px 8px;
+            font-size: 12px; font-weight: 700;
+            color: var(--android-blue);
+            text-transform: uppercase;
         }
 
-        /* The signature MeRepeat green/blue focus box */
-        .setting-row.active-focus, .description.active-focus {
+        .list-item {
+            padding: 18px 24px;
+            display: flex; align-items: center;
+            cursor: pointer; outline: none;
+            border-bottom: 1px solid #f8f8f8;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* The signature MeRepeat Blue Box */
+        .active-focus {
             outline: 4px solid var(--android-blue) !important;
             outline-offset: -4px;
             background-color: rgba(26, 115, 232, 0.08);
         }
 
-        .text-group {
-            display: flex;
-            flex-direction: column;
-            pointer-events: none;
+        .content { flex: 1; }
+        .title { font-size: 16px; color: var(--text-primary); display: block; }
+        .subtitle { font-size: 14px; color: var(--text-secondary); }
+
+        /* Material Switch */
+        .switch-container { width: 34px; height: 14px; background: #bdc1c6; border-radius: 14px; position: relative; }
+        .switch-handle {
+            width: 20px; height: 20px; background: #fafafa;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4); border-radius: 50%;
+            position: absolute; top: -3px; left: -2px; transition: 0.2s;
         }
-
-        .title {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .status {
-            font-size: 14px;
-            color: var(--text-sub);
-        }
-
-        /* Toggle Switch */
-        .switch {
-            position: relative;
-            width: 40px;
-            height: 20px;
-            pointer-events: none;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #bdc1c6;
-            transition: .3s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px; width: 14px;
-            left: 3px; bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--android-blue); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        .description {
-            padding: 24px;
-            font-size: 14px;
-            color: var(--text-sub);
-            line-height: 1.4;
-            background: var(--secondary-bg);
-        }
+        .active-switch .switch-container { background: #8ab4f8; }
+        .active-switch .switch-handle { background: var(--android-blue); left: 16px; }
     </style>
 </head>
 <body>
 
-<div class="phone-container">
-    <header>
-        <h1>Accessibility</h1>
+<div class="phone-frame">
+    <header tabindex="0">
+        <div class="back-arrow"></div>
+        <h1>Settings</h1>
     </header>
 
-    <div class="setting-row" id="toggle-row" tabindex="0">
-        <div class="text-group">
-            <span class="title">Use MeRepeat</span>
-            <span id="label-state" class="status">Off</span>
-        </div>
-        <label class="switch">
-            <input type="checkbox" id="master-switch">
-            <span class="slider"></span>
-        </label>
+    <div class="section-label">Wireless</div>
+    <div class="list-item" tabindex="0">
+        <div class="content"><span class="title">Wi-Fi</span><span class="subtitle">Home-Network</span></div>
     </div>
 
-    <div class="description" tabindex="0">
-        When MeRepeat is on, it provides spoken feedback so you can use your device without looking at the screen. MeRepeat describes your actions and informs you of notifications and alerts.
+    <div class="section-label">Accessibility</div>
+    <div class="list-item" tabindex="0" id="mr-row">
+        <div class="content">
+            <span class="title">MeRepeat</span>
+            <span id="mr-status" class="subtitle">Off</span>
+        </div>
+        <div id="switch-ui"><div class="switch-container"><div class="switch-handle"></div></div></div>
     </div>
 
-    <div class="setting-row" tabindex="0">
-        <div class="text-group">
-            <span class="title">MeRepeat Shortcut</span>
-            <span class="status">Hold volume keys</span>
-        </div>
-    </div>
-
-    <div class="setting-row" tabindex="0">
-        <div class="text-group">
-            <span class="title">Speech rate</span>
-            <span class="status">Fast (1.2x)</span>
-        </div>
+    <div class="list-item" tabindex="0">
+        <div class="content"><span class="title">Display size</span><span class="subtitle">Default</span></div>
     </div>
 </div>
 
 <script>
-    const masterSwitch = document.getElementById('master-switch');
-    const labelState = document.getElementById('label-state');
-    const toggleRow = document.getElementById('toggle-row');
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
+    let audioCtx;
     let isEnabled = false;
+    let currentlySelected = null;
+    const synth = window.speechSynthesis;
 
-    // --- Sound Engine ---
-    const Sounds = {
-        play: (freq, duration, vol = 0.1) => {
+    const Audio = {
+        init: () => {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
         },
-        tick: () => Sounds.play(1000, 0.05, 0.05),
-        on: () => { 
-            Sounds.play(500, 0.1); 
-            setTimeout(() => Sounds.play(800, 0.1), 80); 
+        play: (f, d, v=0.06) => {
+            Audio.init();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + d);
         },
-        off: () => { 
-            Sounds.play(800, 0.1); 
-            setTimeout(() => Sounds.play(500, 0.1), 80); 
-        }
+        tick: () => Audio.play(1100, 0.05), // Focus sound
+        tap: () => Audio.play(600, 0.1, 0.1), // Activation sound
+        chimeOn: () => { Audio.play(500, 0.1); setTimeout(()=>Audio.play(800, 0.1), 80); },
+        chimeOff: () => { Audio.play(800, 0.1); setTimeout(()=>Audio.play(500, 0.1), 80); }
     };
 
-    // --- Voice Engine ---
     function speak(text) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.2;
-        utterance.pitch = 1.0;
-        window.speechSynthesis.speak(utterance);
+        synth.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 1.2;
+        synth.speak(u);
     }
 
-    // --- Event Handling ---
-    function handleToggle() {
-        isEnabled = masterSwitch.checked;
-        labelState.innerText = isEnabled ? "On" : "Off";
-        
-        if (isEnabled) {
-            Sounds.on();
-            speak("MeRepeat turned on. Accessibility settings.");
+    // This function handles the actual "action" of a button
+    function activateItem(item) {
+        Audio.tap();
+        if (item.id === 'mr-row') {
+            isEnabled = !isEnabled;
+            document.getElementById('mr-status').innerText = isEnabled ? "On" : "Off";
+            document.getElementById('switch-ui').classList.toggle('active-switch');
+            if (isEnabled) { Audio.chimeOn(); speak("MeRepeat on."); }
+            else { Audio.chimeOff(); speak("MeRepeat off."); clearFocus(); }
         } else {
-            Sounds.off();
-            speak("MeRepeat turned off.");
-            document.querySelectorAll('.active-focus').forEach(el => el.classList.remove('active-focus'));
+            speak("Opening " + item.querySelector('.title').innerText);
         }
     }
 
-    // Toggle logic
-    toggleRow.addEventListener('click', (e) => {
-        masterSwitch.checked = !masterSwitch.checked;
-        handleToggle();
-    });
+    function clearFocus() {
+        document.querySelectorAll('.active-focus').forEach(el => el.classList.remove('active-focus'));
+        currentlySelected = null;
+    }
 
-    // Global tap detector for repeating items
+    // MAIN INTERACTION INTERCEPTOR
     document.addEventListener('click', (e) => {
-        if (!isEnabled) return;
-        
-        const target = e.target.closest('[tabindex="0"]');
-        if (target && target !== toggleRow) {
-            Sounds.tick();
-            
-            // Highlight
-            document.querySelectorAll('.active-focus').forEach(el => el.classList.remove('active-focus'));
-            target.classList.add('active-focus');
+        const target = e.target.closest('[tabindex="0"], .list-item');
+        if (!target) return;
 
-            // Find text to repeat
-            const title = target.querySelector('.title')?.innerText || "";
-            const status = target.querySelector('.status')?.innerText || "";
-            const body = target.classList.contains('description') ? target.innerText : "";
-            
-            speak(`${title} ${status} ${body}`);
+        // If MeRepeat is OFF, act like a normal website
+        if (!isEnabled && target.id !== 'mr-row') return;
+
+        // If MeRepeat is ON:
+        if (isEnabled || target.id === 'mr-row') {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (currentlySelected === target) {
+                // SECOND TAP: Activate
+                activateItem(target);
+            } else {
+                // FIRST TAP: Select and Speak
+                clearFocus();
+                currentlySelected = target;
+                target.classList.add('active-focus');
+                Audio.tick();
+                
+                const title = target.querySelector('.title')?.innerText || target.innerText;
+                const sub = target.querySelector('.subtitle')?.innerText || "";
+                speak(`${title}. ${sub}. Double tap to activate.`);
+            }
         }
     }, true);
-
 </script>
+
 </body>
-  </html>
-  
+</html>
