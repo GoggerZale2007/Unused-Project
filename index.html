@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>MePhone 14 Settings</title>
     <style>
         :root {
-            --android-blue: #1a73e8;
-            --surface: #ffffff;
-            --bg: #f8f9fa;
+            --google-blue: #1a73e8;
+            --bg-color: #f1f3f4;
+            --card-bg: #ffffff;
             --text-primary: #202124;
             --text-secondary: #5f6368;
-            --divider: #e0e0e0;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: #000;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -27,229 +26,244 @@
             width: 100%;
             max-width: 412px;
             height: 100vh;
-            background: var(--surface);
+            background: var(--bg-color);
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            transition: transform 0.3s ease;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            overflow: hidden;
         }
 
-        /* Page System */
-        .page {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--surface);
-            display: none;
-            flex-direction: column;
+        /* Android 11 Search Bar */
+        .search-container {
+            padding: 50px 16px 10px;
         }
-
-        .page.active { display: flex; }
-
-        header {
-            padding: 56px 24px 16px;
+        .search-bar {
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 24px;
+            color: var(--text-secondary);
+            font-size: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            border-bottom: 1px solid var(--divider);
         }
 
-        .back-btn {
-            width: 24px; height: 24px;
-            margin-right: 20px;
+        /* Card Layout */
+        .settings-list {
+            padding: 8px 16px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 28px; /* Android 11 Rounded Style */
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .item {
+            padding: 20px;
+            display: flex;
+            align-items: center;
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            transition: background 0.1s;
+            position: relative;
         }
 
-        .list-item {
-            padding: 20px 24px;
-            display: flex; align-items: center;
-            cursor: pointer;
-            border-bottom: 1px solid #f8f8f8;
-            outline: none;
-        }
+        .item:active { background: #f1f1f1; }
 
+        /* The MeRepeat Selection Box */
         .active-focus {
-            outline: 4px solid var(--android-blue) !important;
+            outline: 4px solid var(--google-blue) !important;
             outline-offset: -4px;
             background-color: rgba(26, 115, 232, 0.08);
         }
 
-        .content { flex: 1; }
-        .title { font-size: 16px; color: var(--text-primary); display: block; }
-        .subtitle { font-size: 14px; color: var(--text-secondary); }
-
-        /* Real Android Switch */
-        .switch-track {
-            width: 36px; height: 14px;
-            background: #bdc1c6;
-            border-radius: 14px;
-            position: relative;
-        }
-        .switch-thumb {
-            width: 20px; height: 20px;
-            background: #fafafa;
+        .icon-circle {
+            width: 40px; height: 40px;
             border-radius: 50%;
-            position: absolute;
-            top: -3px; left: -2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            transition: 0.2s;
+            background: #e8f0fe;
+            margin-right: 16px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .on .switch-track { background: #8ab4f8; }
-        .on .switch-thumb { background: var(--android-blue); left: 18px; }
 
-        .desc-box {
-            padding: 24px;
-            background: var(--bg);
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
+        .title { display: block; font-size: 16px; color: var(--text-primary); font-weight: 500; }
+        .sub { font-size: 14px; color: var(--text-secondary); }
+
+        /* Android 11 Toggle */
+        .switch-box { margin-left: auto; }
+        .track {
+            width: 36px; height: 14px; background: #bdc1c6;
+            border-radius: 7px; position: relative;
         }
+        .thumb {
+            width: 20px; height: 20px; background: #fff;
+            border-radius: 50%; position: absolute; top: -3px; left: -2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4); transition: 0.2s;
+        }
+        .on .track { background: #aecbfa; }
+        .on .thumb { background: var(--google-blue); left: 18px; }
+
+        /* Subpage Overlay */
+        #sub-page {
+            position: absolute; top: 0; left: 100%;
+            width: 100%; height: 100%; background: var(--bg-color);
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+        #sub-page.active { left: 0; }
     </style>
 </head>
 <body>
 
 <div class="phone-frame">
-    <div id="page-main" class="page active">
-        <header tabindex="0"><h1 style="margin:0; font-size:22px; font-weight:400;">Settings</h1></header>
-        <div class="list-item" tabindex="0">
-            <div class="content"><span class="title">Wi-Fi</span><span class="subtitle">Home_Network</span></div>
+    <div class="search-container">
+        <div class="search-bar">Search settings</div>
+    </div>
+
+    <div class="settings-list">
+        <div class="card">
+            <div class="item" id="nav-accel">
+                <div class="icon-circle" style="background:#fef7e0">👤</div>
+                <div><span class="title">Accessibility</span><span class="sub">MeRepeat, Captions</span></div>
+            </div>
         </div>
-        <div class="list-item" tabindex="0" onclick="navTo('page-acc')">
-            <div class="content"><span class="title">Accessibility</span><span class="subtitle">MeRepeat, Magnification</span></div>
-        </div>
-        <div class="list-item" tabindex="0">
-            <div class="content"><span class="title">About Phone</span><span class="subtitle">Pixel 8</span></div>
+
+        <div class="card">
+            <div class="item">
+                <div class="icon-circle">📶</div>
+                <div><span class="title">Network & internet</span><span class="sub">Wi-Fi, Mobile, Hotspot</span></div>
+            </div>
+            <div class="item">
+                <div class="icon-circle" style="background:#e6ffed">🔋</div>
+                <div><span class="title">Battery</span><span class="sub">80% - Should last until 11:00 PM</span></div>
+            </div>
         </div>
     </div>
 
-    <div id="page-acc" class="page">
-        <header tabindex="0">
-            <div class="back-btn" onclick="navTo('page-main')">←</div>
-            <h1 style="margin:0; font-size:22px; font-weight:400;">MeRepeat</h1>
-        </header>
-        <div class="list-item" tabindex="0" id="master-toggle-row">
-            <div class="content">
-                <span class="title">Use MeRepeat</span>
-                <span id="status-text" class="subtitle">Off</span>
+    <div id="sub-page">
+        <div style="padding: 50px 16px 20px; display: flex; align-items: center;">
+            <div id="back-btn" style="font-size: 24px; margin-right: 20px; cursor: pointer;">←</div>
+            <h1 style="font-size: 22px; font-weight: 400; margin: 0;">MeRepeat</h1>
+        </div>
+        <div class="card" style="margin: 0 16px;">
+            <div class="item" id="master-toggle">
+                <div class="content">
+                    <span class="title">Use MeRepeat</span>
+                    <span id="mr-status" class="sub">Off</span>
+                </div>
+                <div class="switch-box" id="switch-ui"><div class="track"><div class="thumb"></div></div></div>
             </div>
-            <div id="switch-ui" class="switch-track"><div class="switch-thumb"></div></div>
         </div>
-        <div class="desc-box" tabindex="0">
-            When MeRepeat is on, it provides spoken feedback so you can use your device without looking at the screen. 
-            <br><br>
-            <b>To Use:</b> Tap once to select, then double-tap to activate.
-        </div>
+        <p style="padding: 20px 32px; font-size: 14px; color: var(--text-secondary); line-height: 1.5;">
+            When MeRepeat is on, it provides spoken feedback so you can use your device without looking at the screen.
+        </p>
     </div>
 </div>
 
 <script>
-    let audioCtx;
-    let isEnabled = false;
+    let isMeRepeatEnabled = false;
     let selectedEl = null;
-    const synth = window.speechSynthesis;
+    let audioCtx;
 
     const Sounds = {
         init: () => {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
         },
-        play: (f, d, v=0.06) => {
+        play: (f, d) => {
             Sounds.init();
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             o.frequency.value = f;
-            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.06, audioCtx.currentTime);
             g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
             o.connect(g); g.connect(audioCtx.destination);
             o.start(); o.stop(audioCtx.currentTime + d);
         },
         tick: () => Sounds.play(1100, 0.05),
-        tap: () => Sounds.play(600, 0.1, 0.1),
+        tap: () => Sounds.play(600, 0.1),
         on: () => { Sounds.play(500, 0.1); setTimeout(()=>Sounds.play(800, 0.1), 80); },
         off: () => { Sounds.play(800, 0.1); setTimeout(()=>Sounds.play(500, 0.1), 80); }
     };
 
     function speak(txt) {
-        synth.cancel();
+        window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(txt);
         u.rate = 1.2;
-        synth.speak(u);
+        window.speechSynthesis.speak(u);
     }
 
-    function navTo(id) {
-        // Logic: if MeRepeat is on, nav requires double-tap. 
-        // For simplicity in this demo, nav functions are called via the interceptor.
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        clearFocus();
+    // Logic: Intercept clicks based on State
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('.item, #back-btn');
+        if (!target) return;
+
+        // If MeRepeat is OFF, it's just a normal phone
+        if (!isMeRepeatEnabled) {
+            handleNormalClick(target);
+        } else {
+            // If MeRepeat is ON, use Accessibility Logic (First tap selects, second activates)
+            handleAccessibilityClick(target);
+        }
+    }, true);
+
+    function handleNormalClick(target) {
+        if (target.id === 'nav-accel') {
+            document.getElementById('sub-page').classList.add('active');
+        } else if (target.id === 'back-btn') {
+            document.getElementById('sub-page').classList.remove('active');
+        } else if (target.id === 'master-toggle') {
+            // Turning it ON for the first time
+            isMeRepeatEnabled = true;
+            toggleVisuals(true);
+            Sounds.on();
+            speak("MeRepeat turned on. Use MeRepeat switch.");
+        }
+    }
+
+    function handleAccessibilityClick(target) {
+        // Prevent default browser behavior
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (selectedEl === target) {
+            // SECOND TAP: Execution
+            if (target.id === 'master-toggle') {
+                isMeRepeatEnabled = false;
+                toggleVisuals(false);
+                Sounds.off();
+                speak("MeRepeat turned off.");
+                clearFocus();
+            } else if (target.id === 'back-btn') {
+                document.getElementById('sub-page').classList.remove('active');
+                clearFocus();
+            } else {
+                Sounds.tap();
+            }
+        } else {
+            // FIRST TAP: Selection
+            clearFocus();
+            selectedEl = target;
+            target.classList.add('active-focus');
+            Sounds.tick();
+            const title = target.querySelector('.title')?.innerText || "Back";
+            const sub = target.querySelector('.sub')?.innerText || "";
+            speak(`${title}. ${sub}. Double tap to activate.`);
+        }
+    }
+
+    function toggleVisuals(on) {
+        const ui = document.getElementById('switch-ui');
+        const st = document.getElementById('mr-status');
+        if (on) { ui.classList.add('on'); st.innerText = "On"; }
+        else { ui.classList.remove('on'); st.innerText = "Off"; }
     }
 
     function clearFocus() {
         document.querySelectorAll('.active-focus').forEach(el => el.classList.remove('active-focus'));
         selectedEl = null;
     }
-
-    // Master Interceptor
-    document.addEventListener('click', (e) => {
-        const target = e.target.closest('[tabindex="0"], .list-item, .back-btn');
-        if (!target) return;
-
-        // --- SCENARIO A: MeRepeat is OFF ---
-        if (!isEnabled) {
-            // Only allow the master toggle to use "Double Tap" logic to turn it on
-            if (target.id === 'master-toggle-row') {
-                handleDoubleTap(target, () => {
-                    isEnabled = true;
-                    document.getElementById('switch-ui').parentElement.classList.add('on');
-                    document.getElementById('status-text').innerText = "On";
-                    Sounds.on();
-                    speak("MeRepeat turned on. Use MeRepeat.");
-                });
-            } else {
-                // Normal clicking for everything else
-                if (target.getAttribute('onclick')) return; // let the inline onclick handle it
-                Sounds.tick();
-            }
-            return;
-        }
-
-        // --- SCENARIO B: MeRepeat is ON ---
-        e.preventDefault();
-        e.stopPropagation();
-
-        handleDoubleTap(target, () => {
-            if (target.id === 'master-toggle-row') {
-                isEnabled = false;
-                document.getElementById('switch-ui').parentElement.classList.remove('on');
-                document.getElementById('status-text').innerText = "Off";
-                Sounds.off();
-                speak("MeRepeat turned off.");
-                clearFocus();
-            } else if (target.getAttribute('onclick')) {
-                // Handle the back button and navigation
-                const cmd = target.getAttribute('onclick');
-                if (cmd.includes('page-acc')) navTo('page-acc');
-                if (cmd.includes('page-main')) navTo('page-main');
-            } else {
-                Sounds.tap();
-            }
-        });
-    }, true);
-
-    function handleDoubleTap(target, actionCallback) {
-        if (selectedEl === target) {
-            actionCallback();
-        } else {
-            clearFocus();
-            selectedEl = target;
-            target.classList.add('active-focus');
-            Sounds.tick();
-            
-            const title = target.querySelector('.title')?.innerText || target.innerText || "Back";
-            const sub = target.querySelector('.subtitle')?.innerText || "";
-            speak(`${title}. ${sub}. Double tap to activate.`);
-        }
-    }
 </script>
-
 </body>
 </html>
